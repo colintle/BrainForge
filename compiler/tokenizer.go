@@ -28,7 +28,7 @@ func Tokenizer(input string) []*bf.BfToken {
 
 		bfTokens = append(bfTokens, &bf.BfToken{
 			Type:       tokenType,
-			Occurences: 1,
+			Value: char,
 		})
 	}
 

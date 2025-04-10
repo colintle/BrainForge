@@ -1,3 +1,5 @@
+Inspired by: https://github.com/jamiebuilds/the-super-tiny-compiler
+
 # BrainForge
 
 **BrainForge** is an all-in-one Brainfuck toolkit built in Go.  

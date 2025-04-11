@@ -12,6 +12,4 @@ const (
 type GoNode struct {
 	Type GoNodeType
 	Body []*GoNode
-	Statement string
-	Condition string
 }

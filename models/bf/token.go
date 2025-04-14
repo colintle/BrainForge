@@ -7,6 +7,7 @@ type BfToken struct {
 	Value byte
 }
 
-func (token *BfToken) ToString() {
-	fmt.Printf("Token Type: %s | Value: %s\n", bfTypeToString(token.Type), token.Value)
+func (token *BfToken) ToString() string {
+	return fmt.Sprintf("Token Type: %s | Value: %q", bfTypeToString(token.Type), token.Value)
 }
+

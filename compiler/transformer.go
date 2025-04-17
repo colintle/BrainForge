@@ -54,7 +54,7 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 				last := parent.Body[n - 1]
 				if last.Type == golang.GoStatement && strings.HasPrefix(last.Statement, "pointer -= ") {
 					var existing int
-					fmt.Sscanf(last.Statement, "pointer -= %d", existing)
+					fmt.Sscanf(last.Statement, "pointer -= %d", &existing)
 					last.Statement = fmt.Sprintf("pointer -= %d", existing - 1)
 					return
 				}
@@ -63,6 +63,25 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 			parent.Body = append(parent.Body, &golang.GoNode{
 				Type: golang.GoStatement,
 				Statement: "pointer -= 1",
+			})
+		},
+	},
+	bf.BfMoveRight: {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+			n := len(parent.Body)
+			if n > 0 {
+				last := parent.Body[n - 1]
+				if last.Type == golang.GoStatement && strings.HasPrefix(last.Statement, "pointer += ") {
+					var existing int
+					fmt.Sscanf(last.Statement, "pointer += %d", &existing)
+					last.Statement = fmt.Sprintf("pointer += %d", existing + 1)
+					return
+				}
+			}
+
+			parent.Body = append(parent.Body, &golang.GoNode{
+				Type: golang.GoStatement,
+				Statement: "pointer += 1",
 			})
 		},
 	},

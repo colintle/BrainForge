@@ -85,6 +85,14 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 			})
 		},
 	},
+	bf.BfOutput: {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+			parent.Body = append(parent.Body, &golang.GoNode{
+				Type: golang.GoStatement,
+				Statement: "fmt.Printf(\"%c\", memory[pointer])",
+			})
+		},
+	},
 }
 
 func Transformer(ast []*bf.BfNode)[]*golang.GoNode{

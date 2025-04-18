@@ -5,6 +5,6 @@ import (
 )
 
 type VisitorMethods struct{
-	Enter func(node *bf.BfNode, parent *GoNode)
-	Exit func (node *bf.BfNode, parent *GoNode)
+	Enter func(node *bf.BfNode, parent *GoNode) *GoNode
+	Exit func (node *bf.BfNode, parent *GoNode) *GoNode
 }

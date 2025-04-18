@@ -10,7 +10,7 @@ import (
 
 var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMethods{
 	bf.BfIncrement: {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode {
 			n := len(parent.Body)
 			if n > 0 {
 				last := parent.Body[n - 1]
@@ -18,7 +18,7 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 					var existing int
 					fmt.Sscanf(last.Statement, "memory[pointer] += %d", &existing)
 					last.Statement = fmt.Sprintf("memory[pointer] += %d", existing+1)
-					return
+					return nil
 				}
 			}
 	
@@ -26,10 +26,12 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 				Type:      golang.GoStatement,
 				Statement: "memory[pointer] += 1",
 			})
+
+			return nil
 		},
 	},
 	bf.BfDecrement : {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode {
 			n := len(parent.Body)
 			if n > 0 {
 				last := parent.Body[n - 1]
@@ -37,7 +39,7 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 					var existing int
 					fmt.Sscanf(last.Statement, "memory[pointer] -= %d", &existing)
 					last.Statement = fmt.Sprintf("memory[pointer] -= %d", existing - 1)
-					return
+					return nil
 				}
 			}
 
@@ -45,10 +47,12 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 				Type:      golang.GoStatement,
 				Statement: "memory[pointer] -= 1",
 			})
+
+			return nil
 		},
 	},
 	bf.BfMoveLeft: {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
 			n := len(parent.Body)
 			if n > 0 {
 				last := parent.Body[n - 1]
@@ -56,7 +60,7 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 					var existing int
 					fmt.Sscanf(last.Statement, "pointer -= %d", &existing)
 					last.Statement = fmt.Sprintf("pointer -= %d", existing - 1)
-					return
+					return nil
 				}
 			}
 
@@ -64,10 +68,12 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 				Type: golang.GoStatement,
 				Statement: "pointer -= 1",
 			})
+
+			return nil
 		},
 	},
 	bf.BfMoveRight: {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
 			n := len(parent.Body)
 			if n > 0 {
 				last := parent.Body[n - 1]
@@ -75,7 +81,7 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 					var existing int
 					fmt.Sscanf(last.Statement, "pointer += %d", &existing)
 					last.Statement = fmt.Sprintf("pointer += %d", existing + 1)
-					return
+					return nil
 				}
 			}
 
@@ -83,26 +89,46 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 				Type: golang.GoStatement,
 				Statement: "pointer += 1",
 			})
+
+			return nil
 		},
 	},
 	bf.BfOutput: {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
 			parent.Body = append(parent.Body, &golang.GoNode{
 				Type: golang.GoStatement,
 				Statement: "fmt.Printf(\"%c\", memory[pointer])",
 			})
+
+			return nil
 		},
 	},
 	// in transformer, check if node.type is bfinput once and then initialize the variable
 	bf.BfInput: {
-		Enter: func(node *bf.BfNode, parent *golang.GoNode) {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
 			parent.Body = append(parent.Body, &golang.GoNode{
 				Type: golang.GoStatement,
 				Statement: "fmt.Scanf(\"%c\", &input)\nmemory[pointer] = input",
 			})
+
+			return nil
 		},
 	},
+	bf.BfBeginLoop: {
+		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
+			loopNode := &golang.GoNode{
+				Type:      golang.GoFor,
+				Condition: "memory[pointer] != 0",
+				Body:      []*golang.GoNode{},
+			}
 	
+			parent.Body = append(parent.Body, loopNode)
+			return loopNode
+		},
+	},	
+	bf.BfEndLoop: {
+
+	},
 }
 
 func Transformer(ast []*bf.BfNode)[]*golang.GoNode{

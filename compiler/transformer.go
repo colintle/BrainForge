@@ -125,13 +125,30 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 			parent.Body = append(parent.Body, loopNode)
 			return loopNode
 		},
-	},	
-	bf.BfEndLoop: {
-
 	},
 }
 
 func Transformer(ast []*bf.BfNode)[]*golang.GoNode{
 	var newAst []*golang.GoNode = []*golang.GoNode{}
+
+	programNode := &golang.GoNode{
+		Type: golang.GoProgram,
+		Body: []*golang.GoNode{},
+	}
+
+	var walk func(nodes []*bf.BfNode, parent *golang.GoNode)
+	walk = func(nodes []*bf.BfNode, parent *golang.GoNode) {
+		for _, node := range nodes {
+			if visit, ok := visitor[node.Type]; ok {
+				child := visit.Enter(node, parent)
+				if len(node.Body) > 0 && child != nil {
+					walk(node.Body, child)
+				}
+			}
+		}
+	}
+
+	walk(ast, programNode)
+	newAst = append(newAst, programNode)
 	return newAst
 }

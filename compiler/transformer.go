@@ -104,6 +104,9 @@ var visitor map[bf.BfType]golang.VisitorMethods = map[bf.BfType]golang.VisitorMe
 		},
 	},
 	// in transformer, check if node.type is bfinput once and then initialize the variable
+	// var input byte
+	// _ = input
+
 	bf.BfInput: {
 		Enter: func(node *bf.BfNode, parent *golang.GoNode) *golang.GoNode{
 			parent.Body = append(parent.Body, &golang.GoNode{

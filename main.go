@@ -9,15 +9,20 @@ func main() {
 	input := "++>++[<+>-]."
 
 	tokens := compiler.Tokenizer(input)
-
 	fmt.Println("Tokens:")
 	for _, token := range tokens {
-		fmt.Println(token.ToString())
+		token.ToString()
 	}
 
 	ast := compiler.Parser(tokens)
-	fmt.Println("\nAST:")
+	fmt.Println("\nBF AST:")
 	for _, node := range ast {
+		node.ToString()
+	}
+
+	goAst := compiler.Transformer(ast)
+	fmt.Println("\nGo AST:")
+	for _, node := range goAst {
 		fmt.Println(node.ToString())
 	}
 }

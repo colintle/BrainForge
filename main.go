@@ -25,4 +25,8 @@ func main() {
 	for _, node := range goAst {
 		fmt.Println(node.ToString())
 	}
+
+	generatedCode := compiler.CodeGenerator(goAst)
+	fmt.Println("\nGenerated Go Code:\n")
+	fmt.Println(generatedCode)
 }

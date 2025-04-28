@@ -16,22 +16,22 @@ func compile(c *cli.Context) error {
     }
 
     tokens := compiler.Tokenizer(src)
-    fmt.Println("Tokens:")
-    for _, tok := range tokens {
-        fmt.Print(tok.ToString())
-    }
+    // fmt.Println("Tokens:")
+    // for _, tok := range tokens {
+    //     fmt.Print(tok.ToString())
+    // }
 
     ast := compiler.Parser(tokens)
-    fmt.Println("\nBF AST:")
-    for _, node := range ast {
-        fmt.Print(node.ToString())
-    }
+    // fmt.Println("\nBF AST:")
+    // for _, node := range ast {
+    //     fmt.Print(node.ToString())
+    // }
 
     goAst := compiler.Transformer(ast)
-    fmt.Println("\nGo AST:")
-    for _, node := range goAst {
-        fmt.Print(node.ToString())
-    }
+    // fmt.Println("\nGo AST:")
+    // for _, node := range goAst {
+    //     fmt.Print(node.ToString())
+    // }
 
     code := compiler.CodeGenerator(goAst)
     fmt.Print("\nGenerated Go Code:\n", code)

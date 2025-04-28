@@ -8,6 +8,6 @@ type BfToken struct {
 }
 
 func (token *BfToken) ToString() string {
-	return fmt.Sprintf("Token Type: %s | Value: %q", bfTypeToString(token.Type), token.Value)
+	return fmt.Sprintf("Token Type: %s | Value: %q\n", bfTypeToString(token.Type), token.Value)
 }
 

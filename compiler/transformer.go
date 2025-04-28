@@ -153,5 +153,6 @@ func Transformer(ast []*bf.BfNode)[]*golang.GoNode{
 
 	walk(ast, programNode)
 	newAst = append(newAst, programNode)
+	// ast is an array with only one node (ProgramNode)
 	return newAst
 }
